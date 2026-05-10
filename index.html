@@ -1,61 +1,59 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Tetris chạy trên trình duyệt — canvas, điều khiển bàn phím, giao diện một màn hình."
-    />
-    <title>Tetris</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/css/style.css" />
-  </head>
-  <body>
-    <div class="app">
-      <header class="app-header">
-        <h1 class="logo">TETRIS</h1>
-        <p class="tagline">Xếp hàng — xóa dòng — điểm cao</p>
-      </header>
 
-      <main class="layout">
-        <section class="play-panel" aria-label="Màn chơi">
-          <div class="canvas-shell">
-            <canvas id="tetris" tabindex="0"></canvas>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="Tetris chạy trên trình duyệt — canvas, điều khiển bàn phím, giao diện một màn hình." />
+  <title>Tetris</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1 class="logo">TETRIS</h1>
+      <p class="tagline">Xếp hàng — xóa dòng — điểm cao</p>
+    </header>
+
+    <main class="layout">
+      <section class="play-panel" aria-label="Màn chơi">
+        <div class="canvas-shell">
+          <canvas id="tetris" tabindex="0"></canvas>
+        </div>
+        <div class="hud">
+          <div class="stat">
+            <span class="stat-label">Điểm</span>
+            <span class="stat-value" id="score">0</span>
           </div>
-          <div class="hud">
-            <div class="stat">
-              <span class="stat-label">Điểm</span>
-              <span class="stat-value" id="score">0</span>
-            </div>
-          </div>
-        </section>
+        </div>
+      </section>
 
-        <aside class="guide-panel" aria-label="Hướng dẫn">
-          <h2 class="guide-title">Điều khiển</h2>
-          <ul class="key-list">
-            <li><kbd>←</kbd> <kbd>→</kbd> Di chuyển trái / phải</li>
-            <li><kbd>↓</kbd> Rơi nhanh xuống</li>
-            <li><kbd>Q</kbd> Xoay ngược chiều kim đồng hồ</li>
-            <li><kbd>W</kbd> Xoay theo chiều kim đồng hồ</li>
-          </ul>
+      <aside class="guide-panel" aria-label="Hướng dẫn">
+        <h2 class="guide-title">Điều khiển</h2>
+        <ul class="key-list">
+          <li><kbd>←</kbd> <kbd>→</kbd> Di chuyển trái / phải</li>
+          <li><kbd>↓</kbd> Rơi nhanh xuống</li>
+        </ul>
 
-          <h2 class="guide-title">Cách chơi</h2>
-          <ul class="rule-list">
-            <li>Gạch rơi từ trên; căn chỉnh để lấp đầy một hàng ngang.</li>
-            <li>Hàng đầy sẽ biến mất và bạn được điểm.</li>
-            <li>Nếu khối chạm trần khi có gạch mới — trò chơi reset điểm.</li>
-          </ul>
+        <h2 class="guide-title">Cách chơi</h2>
+        <ul class="rule-list">
+          <li>Gạch rơi từ trên; căn chỉnh để lấp đầy một hàng ngang.</li>
+          <li>Hàng đầy sẽ biến mất và bạn được điểm.</li>
+          <li>Nếu khối chạm trần khi có gạch mới — trò chơi reset điểm.</li>
+        </ul>
 
-          <p class="hint">Nhấp vào khung chơi nếu phím không hoạt động (trình duyệt cần focus).</p>
-        </aside>
-      </main>
-    </div>
-    <script src="assets/js/tetris.js" defer></script>
-  </body>
+        <p class="hint">Nhấp vào khung chơi nếu phím không hoạt động (trình duyệt cần focus).</p>
+      </aside>
+    </main>
+  </div>
+  <script src="assets/js/tetris.js" defer></script>
+</body>
+
 </html>
