@@ -26,4 +26,3 @@ Mở `index.html` trực tiếp trong trình duyệt, hoặc phục vụ tĩnh b
 |------|-----------|
 | ← → | Di chuyển |
 | ↓ | Rơi nhanh |
-| Q / W | Xoay |
