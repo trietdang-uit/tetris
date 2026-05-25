@@ -74,7 +74,6 @@ function collide(arena, player) {
   return false;
 }
 
-
 function createMatrix(w, h) {
   const matrix = [];
   while (h--) matrix.push(new Array(w).fill(0));
@@ -202,13 +201,18 @@ function merge(arena, player) {
 
 function playerDrop() {
   player.pos.y++;
+
   if (collide(arena, player)) {
     player.pos.y--;
     merge(arena, player);
-    playerReset();
+
     arenaSweep();
+
+    playerReset();
+
     updateScore();
   }
+
   dropCounter = 0;
 }
 
@@ -279,4 +283,3 @@ update();
 requestAnimationFrame(() => {
   onLayoutResize();
 });
-
