@@ -212,13 +212,18 @@ function rotate(matrix, dir) {
 
 function playerDrop() {
   player.pos.y++;
+
   if (collide(arena, player)) {
     player.pos.y--;
     merge(arena, player);
-    playerReset();
+
     arenaSweep();
+
+    playerReset();
+
     updateScore();
   }
+
   dropCounter = 0;
 }
 
