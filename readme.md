@@ -1,3 +1,16 @@
+# Nhóm #08: Bài cuối kì môn Kỹ năng nghề nghiệp
+
+Giảng viên hướng dẫn:
+ThS. Nguyễn Văn Toàn
+
+Nhóm sinh viên thực hiện:
+Phạm Thụy Thanh Hằng - 25730110
+Phạm Chiêu Đan Phượng - 25730136
+Đặng Minh Triết - 25730155
+Phạm Trần Đức Trọng - 25730156
+Hoàng Chí Công - 25730101
+
+
 # Tetris
 
 Trò chơi xếp gạch chạy trên trình duyệt (HTML5 Canvas, vanilla JS, không build).
