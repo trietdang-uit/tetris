@@ -51,15 +51,27 @@ function fitCellSize() {
 
 function arenaSweep() {
   let rowCount = 1;
-  outer: for (let y = arena.length - 1; y > 0; --y) {
+
+  for (let y = arena.length - 1; y >= 0; --y) {
+    let full = true;
+
     for (let x = 0; x < arena[y].length; ++x) {
-      if (arena[y][x] === 0) continue outer;
+      if (arena[y][x] === 0) {
+        full = false;
+        break;
+      }
     }
-    const row = arena.splice(y, 1)[0].fill(0);
-    arena.unshift(row);
-    ++y;
+
+    if (!full) continue;
+
+    arena.splice(y, 1);
+
+    arena.unshift(new Array(ARENA_WIDTH).fill(0));
+
     player.score += rowCount * 10;
     rowCount *= 2;
+
+    y++;
   }
 }
 
