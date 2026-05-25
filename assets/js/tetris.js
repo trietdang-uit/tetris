@@ -260,10 +260,13 @@ let dropInterval = 1000;
 let lastTime = 0;
 
 function update(time = 0) {
-  const deltaTime = time - lastTime;
+  const deltaTime = Math.min(time - lastTime, 100);
   lastTime = time;
+
   dropCounter += deltaTime;
+
   if (dropCounter > dropInterval) playerDrop();
+
   draw();
   requestAnimationFrame(update);
 }
@@ -303,7 +306,9 @@ document.addEventListener("keydown", (event) => {
 onLayoutResize();
 playerReset();
 updateScore();
-update();
+
+requestAnimationFrame(update);
+
 requestAnimationFrame(() => {
   onLayoutResize();
 });
