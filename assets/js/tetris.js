@@ -289,11 +289,12 @@ window.addEventListener("resize", onLayoutResize);
 
 document.addEventListener("keydown", (event) => {
   const k = event.keyCode;
-  if (k === 37 || k === 39 || k === 40 || k === 81 || k === 87) {
+  if (k === 37 || k === 38 || k === 39 || k === 40 || k === 81 || k === 87) {
     event.preventDefault();
     if (k === 37) playerMove(-1);
     else if (k === 39) playerMove(1);
     else if (k === 40) playerDrop();
+    else if (k === 38) playerRotate(1);
     else if (k === 81) playerRotate(-1);
     else if (k === 87) playerRotate(1);
   }

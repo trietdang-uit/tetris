@@ -24,5 +24,8 @@ Mở `index.html` trực tiếp trong trình duyệt, hoặc phục vụ tĩnh b
 
 | Phím | Hành động |
 |------|-----------|
-| ← → | Di chuyển |
-| ↓ | Rơi nhanh |
+| ← → | Di chuyển trái / phải |
+| ↓ | Rơi nhanh xuống |
+| ↑ | Xoay sang trái / phải |
+| Q | Xoay sang trái |
+| W | Xoay sang phải |
