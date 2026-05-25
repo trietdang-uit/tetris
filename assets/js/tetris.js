@@ -17,6 +17,7 @@ const COLORS = {
   6: "#4ade80",
   7: "#f87171",
 };
+
 function getDpr() {
   return Math.min(window.devicePixelRatio || 1, 2);
 }
@@ -73,7 +74,6 @@ function collide(arena, player) {
   }
   return false;
 }
-
 
 function createMatrix(w, h) {
   const matrix = [];
@@ -200,6 +200,16 @@ function merge(arena, player) {
   });
 }
 
+function rotate(matrix, dir) {
+  for (let y = 0; y < matrix.length; ++y) {
+    for (let x = 0; x < y; ++x) {
+      [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+    }
+  }
+  if (dir > 0) matrix.forEach((row) => row.reverse());
+  else matrix.reverse();
+}
+
 function playerDrop() {
   player.pos.y++;
   if (collide(arena, player)) {
@@ -227,6 +237,21 @@ function playerReset() {
     arena.forEach((row) => row.fill(0));
     player.score = 0;
     updateScore();
+  }
+}
+
+function playerRotate(dir) {
+  const pos = player.pos.x;
+  let offset = 1;
+  rotate(player.matrix, dir);
+  while (collide(arena, player)) {
+    player.pos.x += offset;
+    offset = -(offset + (offset > 0 ? 1 : -1));
+    if (offset > player.matrix[0].length) {
+      rotate(player.matrix, -dir);
+      player.pos.x = pos;
+      return;
+    }
   }
 }
 
@@ -264,11 +289,14 @@ window.addEventListener("resize", onLayoutResize);
 
 document.addEventListener("keydown", (event) => {
   const k = event.keyCode;
-  if (k === 37 || k === 39 || k === 40) {
+  if (k === 37 || k === 38 || k === 39 || k === 40 || k === 81 || k === 87) {
     event.preventDefault();
     if (k === 37) playerMove(-1);
     else if (k === 39) playerMove(1);
     else if (k === 40) playerDrop();
+    else if (k === 38) playerRotate(1);
+    else if (k === 81) playerRotate(-1);
+    else if (k === 87) playerRotate(1);
   }
 });
 
@@ -279,4 +307,3 @@ update();
 requestAnimationFrame(() => {
   onLayoutResize();
 });
-
