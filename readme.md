@@ -29,3 +29,4 @@ Mở `index.html` trực tiếp trong trình duyệt, hoặc phục vụ tĩnh b
 | ↑ | Xoay sang trái / phải |
 | Q | Xoay sang trái |
 | W | Xoay sang phải |
+Hang Pham đã kiểm tra game.
