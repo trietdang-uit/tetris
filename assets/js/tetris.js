@@ -18,6 +18,8 @@ const COLORS = {
   7: "#f87171",
 };
 
+let pieceBag = [];
+
 function getDpr() {
   return Math.min(window.devicePixelRatio || 1, 2);
 }
@@ -138,6 +140,23 @@ function createPiece(type) {
     ];
 }
 
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; --i) {
+    const j = (Math.random() * (i + 1)) | 0;
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+
+  return array;
+}
+
+function getNextPieceType() {
+  if (pieceBag.length === 0) {
+    pieceBag = shuffle(["I", "L", "J", "O", "T", "S", "Z"]);
+  }
+
+  return pieceBag.pop();
+}
+
 function drawGrid() {
   const W = ARENA_WIDTH * CELL_SIZE;
   const H = ARENA_HEIGHT * CELL_SIZE;
@@ -245,13 +264,15 @@ function playerMove(dir) {
 }
 
 function playerReset() {
-  const pieces = "ILJOTSZ";
-  player.matrix = createPiece(pieces[(pieces.length * Math.random()) | 0]);
+  player.matrix = createPiece(getNextPieceType());
+
   player.pos.y = 0;
   player.pos.x =
     ((arena[0].length / 2) | 0) - ((player.matrix[0].length / 2) | 0);
+
   if (collide(arena, player)) {
     arena.forEach((row) => row.fill(0));
+    pieceBag = [];
     player.score = 0;
     updateScore();
   }
