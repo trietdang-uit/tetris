@@ -243,12 +243,7 @@ function drawGameOver() {
   context.font = "700 28px Outfit, sans-serif";
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillText("GAME OVER", W / 2, H / 2 - 18);
-
-  context.font = "500 14px Outfit, sans-serif";
-  const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const restartText = isTouchDevice ? "Chạm vào đây để chơi lại" : "Nhấn Enter để chơi lại";
-  context.fillText(restartText, W / 2, H / 2 + 22);
+  context.fillText("GAME OVER", W / 2, H / 2 - 24);
 }
 
 function drawMatrix(matrix, offset) {
@@ -358,8 +353,11 @@ function restartGame() {
   dropCounter = 0;
   lastTime = 0;
 
+  const btnRestart = document.getElementById("btn-restart");
+  if (btnRestart) btnRestart.classList.remove("show");
+
   playerReset();
-  requestAnimationFrame(update);
+  requestAnimationFrame(gameLoop);
 }
 
 let dropCounter = 0;
@@ -371,6 +369,8 @@ function gameLoop(time = 0) {
   if (isGameOver) {
     draw();
     drawGameOver();
+    const btnRestart = document.getElementById("btn-restart");
+    if (btnRestart) btnRestart.classList.add("show");
     return;
   }
 
@@ -396,10 +396,6 @@ const player = { pos: { x: 0, y: 0 }, matrix: null, score: 0 };
 
 canvas.addEventListener("pointerdown", (e) => {
   canvas.focus();
-  if (isGameOver) {
-    e.preventDefault();
-    restartGame();
-  }
 });
 
 function onLayoutResize() {
@@ -419,11 +415,7 @@ if (typeof ResizeObserver !== "undefined" && playPanel) {
 window.addEventListener("resize", onLayoutResize);
 
 document.addEventListener("keydown", (event) => {
-  if (isGameOver && event.key === "Enter") {
-    event.preventDefault();
-    restartGame();
-    return;
-  }
+  if (isGameOver) return;
 
   const k = event.keyCode;
 
@@ -445,18 +437,19 @@ const btnRight = document.getElementById("btn-right");
 const btnRotate = document.getElementById("btn-rotate");
 const btnDown = document.getElementById("btn-down");
 
-function handleMobileAction(actionFn) {
-  if (isGameOver) {
-    restartGame();
-  } else {
-    actionFn();
-  }
-}
+if (btnLeft) btnLeft.addEventListener("pointerdown", (e) => { e.preventDefault(); playerMove(-1); });
+if (btnRight) btnRight.addEventListener("pointerdown", (e) => { e.preventDefault(); playerMove(1); });
+if (btnRotate) btnRotate.addEventListener("pointerdown", (e) => { e.preventDefault(); rotatePiece(1); });
+if (btnDown) btnDown.addEventListener("pointerdown", (e) => { e.preventDefault(); playerDrop(); });
 
-if (btnLeft) btnLeft.addEventListener("pointerdown", (e) => { e.preventDefault(); handleMobileAction(() => playerMove(-1)); });
-if (btnRight) btnRight.addEventListener("pointerdown", (e) => { e.preventDefault(); handleMobileAction(() => playerMove(1)); });
-if (btnRotate) btnRotate.addEventListener("pointerdown", (e) => { e.preventDefault(); handleMobileAction(() => rotatePiece(1)); });
-if (btnDown) btnDown.addEventListener("pointerdown", (e) => { e.preventDefault(); handleMobileAction(() => playerDrop()); });
+// Nút Restart HTML
+const btnRestart = document.getElementById("btn-restart");
+if (btnRestart) {
+  btnRestart.addEventListener("click", (e) => {
+    e.preventDefault();
+    restartGame();
+  });
+}
 
 onLayoutResize();
 playerReset();
