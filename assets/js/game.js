@@ -22,7 +22,7 @@ function getDpr() {
   return Math.min(window.devicePixelRatio || 1, 2);
 }
 
-function syncCanvasPixels() {
+function optimizeResolution() {
   const logicalW = ARENA_WIDTH * CELL_SIZE;
   const logicalH = ARENA_HEIGHT * CELL_SIZE;
   const dpr = getDpr();
@@ -37,19 +37,25 @@ function syncCanvasPixels() {
 function fitCellSize() {
   if (!playPanel) return;
   const hud = document.querySelector(".hud");
+  const mobileCtrl = document.querySelector(".mobile-controls");
   const shell = document.querySelector(".canvas-shell");
   const rect = playPanel.getBoundingClientRect();
-  const hudH = hud ? hud.offsetHeight + 20 : 72;
+  
+  let subtractH = (hud ? hud.offsetHeight + 16 : 72);
+  if (mobileCtrl && window.getComputedStyle(mobileCtrl).display !== "none") {
+    subtractH += mobileCtrl.offsetHeight + 16;
+  }
+  
   const shellPad = shell ? 12 : 0;
   const availW = Math.max(1, rect.width - shellPad);
-  const availH = Math.max(1, rect.height - hudH - shellPad);
+  const availH = Math.max(1, rect.height - subtractH - shellPad - 8); // 8px buffer to ensure zero clipping
   const byW = Math.floor(availW / ARENA_WIDTH);
   const byH = Math.floor(availH / ARENA_HEIGHT);
   CELL_SIZE = Math.max(14, Math.min(byW, byH, 40));
-  syncCanvasPixels();
+  optimizeResolution();
 }
 
-function arenaSweep() {
+function clearFullLines() {
   let rowCount = 1;
   outer: for (let y = arena.length - 1; y > 0; --y) {
     for (let x = 0; x < arena[y].length; ++x) {
@@ -63,7 +69,7 @@ function arenaSweep() {
   }
 }
 
-function collide(arena, player) {
+function checkCollision(arena, player) {
   const [m, o] = [player.matrix, player.pos];
   for (let y = 0; y < m.length; ++y) {
     for (let x = 0; x < m[y].length; ++x) {
@@ -212,11 +218,11 @@ function rotate(matrix, dir) {
 
 function playerDrop() {
   player.pos.y++;
-  if (collide(arena, player)) {
+  if (checkCollision(arena, player)) {
     player.pos.y--;
     merge(arena, player);
     playerReset();
-    arenaSweep();
+    clearFullLines();
     updateScore();
   }
   dropCounter = 0;
@@ -224,7 +230,7 @@ function playerDrop() {
 
 function playerMove(dir) {
   player.pos.x += dir;
-  if (collide(arena, player)) player.pos.x -= dir;
+  if (checkCollision(arena, player)) player.pos.x -= dir;
 }
 
 function playerReset() {
@@ -233,18 +239,18 @@ function playerReset() {
   player.pos.y = 0;
   player.pos.x =
     ((arena[0].length / 2) | 0) - ((player.matrix[0].length / 2) | 0);
-  if (collide(arena, player)) {
+  if (checkCollision(arena, player)) {
     arena.forEach((row) => row.fill(0));
     player.score = 0;
     updateScore();
   }
 }
 
-function playerRotate(dir) {
+function rotatePiece(dir) {
   const pos = player.pos.x;
   let offset = 1;
   rotate(player.matrix, dir);
-  while (collide(arena, player)) {
+  while (checkCollision(arena, player)) {
     player.pos.x += offset;
     offset = -(offset + (offset > 0 ? 1 : -1));
     if (offset > player.matrix[0].length) {
@@ -259,13 +265,13 @@ let dropCounter = 0;
 let dropInterval = 1000;
 let lastTime = 0;
 
-function update(time = 0) {
+function gameLoop(time = 0) {
   const deltaTime = time - lastTime;
   lastTime = time;
   dropCounter += deltaTime;
   if (dropCounter > dropInterval) playerDrop();
   draw();
-  requestAnimationFrame(update);
+  requestAnimationFrame(gameLoop);
 }
 
 function updateScore() {
@@ -294,16 +300,27 @@ document.addEventListener("keydown", (event) => {
     if (k === 37) playerMove(-1);
     else if (k === 39) playerMove(1);
     else if (k === 40) playerDrop();
-    else if (k === 38) playerRotate(1);
-    else if (k === 81) playerRotate(-1);
-    else if (k === 87) playerRotate(1);
+    else if (k === 38) rotatePiece(1);
+    else if (k === 81) rotatePiece(-1);
+    else if (k === 87) rotatePiece(1);
   }
 });
+
+// Bàn phím ảo trên di động
+const btnLeft = document.getElementById("btn-left");
+const btnRight = document.getElementById("btn-right");
+const btnRotate = document.getElementById("btn-rotate");
+const btnDown = document.getElementById("btn-down");
+
+if (btnLeft) btnLeft.addEventListener("pointerdown", (e) => { e.preventDefault(); playerMove(-1); });
+if (btnRight) btnRight.addEventListener("pointerdown", (e) => { e.preventDefault(); playerMove(1); });
+if (btnRotate) btnRotate.addEventListener("pointerdown", (e) => { e.preventDefault(); rotatePiece(1); });
+if (btnDown) btnDown.addEventListener("pointerdown", (e) => { e.preventDefault(); playerDrop(); });
 
 onLayoutResize();
 playerReset();
 updateScore();
-update();
+gameLoop();
 requestAnimationFrame(() => {
   onLayoutResize();
 });
