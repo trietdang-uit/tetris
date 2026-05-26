@@ -246,7 +246,9 @@ function drawGameOver() {
   context.fillText("GAME OVER", W / 2, H / 2 - 18);
 
   context.font = "500 14px Outfit, sans-serif";
-  context.fillText("Nhấn Enter để chơi lại", W / 2, H / 2 + 22);
+  const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  const restartText = isTouchDevice ? "Chạm vào đây để chơi lại" : "Nhấn Enter để chơi lại";
+  context.fillText(restartText, W / 2, H / 2 + 22);
 }
 
 function drawMatrix(matrix, offset) {
@@ -392,7 +394,13 @@ function updateScore() {
 const arena = createMatrix(ARENA_WIDTH, ARENA_HEIGHT);
 const player = { pos: { x: 0, y: 0 }, matrix: null, score: 0 };
 
-canvas.addEventListener("click", () => canvas.focus());
+canvas.addEventListener("pointerdown", (e) => {
+  canvas.focus();
+  if (isGameOver) {
+    e.preventDefault();
+    restartGame();
+  }
+});
 
 function onLayoutResize() {
   fitCellSize();
@@ -437,10 +445,18 @@ const btnRight = document.getElementById("btn-right");
 const btnRotate = document.getElementById("btn-rotate");
 const btnDown = document.getElementById("btn-down");
 
-if (btnLeft) btnLeft.addEventListener("pointerdown", (e) => { e.preventDefault(); playerMove(-1); });
-if (btnRight) btnRight.addEventListener("pointerdown", (e) => { e.preventDefault(); playerMove(1); });
-if (btnRotate) btnRotate.addEventListener("pointerdown", (e) => { e.preventDefault(); rotatePiece(1); });
-if (btnDown) btnDown.addEventListener("pointerdown", (e) => { e.preventDefault(); playerDrop(); });
+function handleMobileAction(actionFn) {
+  if (isGameOver) {
+    restartGame();
+  } else {
+    actionFn();
+  }
+}
+
+if (btnLeft) btnLeft.addEventListener("pointerdown", (e) => { e.preventDefault(); handleMobileAction(() => playerMove(-1)); });
+if (btnRight) btnRight.addEventListener("pointerdown", (e) => { e.preventDefault(); handleMobileAction(() => playerMove(1)); });
+if (btnRotate) btnRotate.addEventListener("pointerdown", (e) => { e.preventDefault(); handleMobileAction(() => rotatePiece(1)); });
+if (btnDown) btnDown.addEventListener("pointerdown", (e) => { e.preventDefault(); handleMobileAction(() => playerDrop()); });
 
 onLayoutResize();
 playerReset();
